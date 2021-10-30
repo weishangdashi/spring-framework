@@ -166,7 +166,9 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * @param root the DOM root element of the document
 	 */
 	protected void parseBeanDefinitions(Element root, BeanDefinitionParserDelegate delegate) {
+		//判断是否上Spring 的命名空间
 		if (delegate.isDefaultNamespace(root)) {
+			//取所有节点
 			NodeList nl = root.getChildNodes();
 			for (int i = 0; i < nl.getLength(); i++) {
 				Node node = nl.item(i);
@@ -187,13 +189,16 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	}
 
 	private void parseDefaultElement(Element ele, BeanDefinitionParserDelegate delegate) {
+		// 导入标签 进行导入解析
 		if (delegate.nodeNameEquals(ele, IMPORT_ELEMENT)) {
 			importBeanDefinitionResource(ele);
 		}
 		else if (delegate.nodeNameEquals(ele, ALIAS_ELEMENT)) {
+			// 别名标签元素 进行别名解析
 			processAliasRegistration(ele);
 		}
 		else if (delegate.nodeNameEquals(ele, BEAN_ELEMENT)) {
+			// BEAN标签元素 进行别名解析
 			processBeanDefinition(ele, delegate);
 		}
 		else if (delegate.nodeNameEquals(ele, NESTED_BEANS_ELEMENT)) {
