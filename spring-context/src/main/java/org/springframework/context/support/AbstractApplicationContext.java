@@ -543,20 +543,26 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 	@Override
 	public void refresh() throws BeansException, IllegalStateException {
+		//给refresh方法 容器加上锁  避免在refresh阶段  容器进行初始始化 或者销毁
 		synchronized (this.startupShutdownMonitor) {
 			StartupStep contextRefresh = this.applicationStartup.start("spring.context.refresh");
-
+			//调用容器准备刷新的方法 ，获取容器的时间 设置同步表示，具体方法
 			// Prepare this context for refreshing.
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
+			//告诉子类启动 refresh方法 Bean 定义资源文件的 载入
+			//子类的FreshBeanFactory方法启动 里面有抽象方法
+			//针对XML 配置 最终创建内部容器 ，容器负责Bean的创建于管理 ，此步骤会进行BeanDefinition的注册
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
+			//注册一些容器中需要的系统BEAN 例如 classloader beanfactoryPostprocessor
 			prepareBeanFactory(beanFactory);
 
 			try {
 				// Allows post-processing of the bean factory in context subclasses.
+				//允许容器的子类去注册 postProces  钩子方法
 				postProcessBeanFactory(beanFactory);
 
 				StartupStep beanPostProcess = this.applicationStartup.start("spring.context.beans.post-process");
